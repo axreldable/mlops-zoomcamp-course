@@ -5,3 +5,4 @@ pyarrow
 plotly
 mlflow
 boto3
+hyperopt
