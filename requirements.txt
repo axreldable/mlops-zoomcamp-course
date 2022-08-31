@@ -6,3 +6,6 @@ plotly
 mlflow
 boto3
 hyperopt
+prefect==2.0b5
+python-dateutil
+
