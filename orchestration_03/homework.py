@@ -1,3 +1,4 @@
+import pickle
 from datetime import datetime
 
 import pandas as pd
@@ -9,7 +10,7 @@ from sklearn.metrics import mean_squared_error
 
 
 @task
-def get_paths(date=None):
+def get_paths_and_date(date=None):
     if date is None:
         dt = datetime.now()
     else:
@@ -21,7 +22,7 @@ def get_paths(date=None):
     train_path = f'./data/fhv_tripdata_{tr}.parquet'
     val_path = f'./data/fhv_tripdata_{vl}.parquet'
 
-    return train_path, val_path
+    return train_path, val_path, dt.strftime("%Y-%m-%d")
 
 
 @task
@@ -76,9 +77,23 @@ def run_model(df, categorical, dv, lr):
     return
 
 
+def save_model(model, path):
+    with open(path, 'wb') as f_out:
+        pickle.dump(model, f_out)
+
+
+def get_date(date=None):
+    if date is None:
+        dt = datetime.now()
+    else:
+        dt = datetime.strptime(date, "%Y-%m-%d")
+
+    return dt.strftime("%Y-%m-%d")
+
+
 @flow
 def main(date=None):
-    train_path, val_path = get_paths(date).result()
+    train_path, val_path, d = get_paths_and_date(date).result()
 
     categorical = ['PUlocationID', 'DOlocationID']
 
@@ -92,5 +107,20 @@ def main(date=None):
     lr, dv = train_model(df_train_processed, categorical).result()
     run_model(df_val_processed, categorical, dv, lr)
 
+    # save the model
+    save_model(lr, f"models/model-{d}.bin")
+    save_model(dv, f"models/dv-{d}.b")
 
-main(date="2021-08-15")
+
+# main(date="2021-08-15")
+from prefect.deployments import DeploymentSpec
+from prefect.orion.schemas.schedules import CronSchedule
+from prefect.flow_runners import SubprocessFlowRunner
+
+DeploymentSpec(
+    flow=main,
+    name="hw_3",
+    schedule=CronSchedule(cron="0 9 15 * *"),
+    flow_runner=SubprocessFlowRunner(),
+    tags=["ml"]
+)
