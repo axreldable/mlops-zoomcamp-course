@@ -1,6 +1,6 @@
 pandas
 seaborn
-sklearn
+scikit-learn==1.1.2
 pyarrow
 plotly
 mlflow
