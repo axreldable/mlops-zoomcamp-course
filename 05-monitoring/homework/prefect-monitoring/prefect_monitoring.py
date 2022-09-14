@@ -79,11 +79,12 @@ def run_evidently(ref_data, data):
 
 @task
 def save_report(result):
-    pass
+    client = MongoClient("mongodb://localhost:27017/")
+    client.get_database("prediction_service").get_collection("report").insert_one(result)
 
 @task
 def save_html_report(result):
-    pass
+    result.save("evidently_report_example.html")
 
 
 @flow
