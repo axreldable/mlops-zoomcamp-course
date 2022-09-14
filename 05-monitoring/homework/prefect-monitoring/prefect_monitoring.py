@@ -17,9 +17,11 @@ MONGO_CLIENT_ADDRESS = "mongodb://localhost:27017/"
 MONGO_DATABASE = "prediction_service"
 PREDICTION_COLLECTION = "data"
 REPORT_COLLECTION = "report"
-REFERENCE_DATA_FILE = "../datasets/green_tripdata_2021-03.parquet" # Modify this for Q7
+# REFERENCE_DATA_FILE = "../datasets/green_tripdata_2021-03.parquet" # Modify this for Q7
+REFERENCE_DATA_FILE = "./green_tripdata_2021-03to04.parquet" # Modify this for Q7
 TARGET_DATA_FILE = "target.csv"
-MODEL_FILE = os.getenv('MODEL_FILE', '../prediction_service/lin_reg.bin') # Modify this for Q7
+# MODEL_FILE = os.getenv('MODEL_FILE', '../prediction_service/lin_reg.bin') # Modify this for Q7
+MODEL_FILE = os.getenv('MODEL_FILE', '../prediction_service/lin_reg_V2.bin') # Modify this for Q7
 
 @task
 def upload_target(filename):
