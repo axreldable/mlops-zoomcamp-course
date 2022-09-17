@@ -1,9 +1,7 @@
 name: Mini project CI
 
 on:
-  push:
-    branches:
-      - main
+  push
 
 jobs:
   Explore-GitHub-Actions:
